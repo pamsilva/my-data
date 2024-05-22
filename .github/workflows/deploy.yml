@@ -23,14 +23,15 @@ jobs:
         script: |
           cd /opt/my-data &&
 
-          # Create .env file
+          # backup existing .env
           if [ -f .env ]; then
-            cp .env .env-$(date "+%Y%m%d-%H%M%S")
-          else
-            echo INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} >> .env
-            echo INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} >> .env
-            echo GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }} >> .env
+            mv .env .env-$(date "+%Y%m%d-%H%M%S")
           fi
+
+          # update .env with latest secrets
+          echo INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} >> .env
+          echo INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} >> .env
+          echo GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }} >> .env
 
           # pull and build services
           git pull &&
