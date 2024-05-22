@@ -25,9 +25,9 @@ jobs:
 
           # Create .env file
           if [ ! -f .env ]; then
-            echo =${{ secrets.INFLUXDB_ADMIN_USER }} >> .env
-            echo API_KEY=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} >> .env
-            echo SECRET_KEY=${{ secrets.GF_SECURITU_ADMIN_PASSWORD }} >> .env
+            echo INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} >> .env
+            echo INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} >> .env
+            echo GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }} >> .env
           fi
 
           git pull &&
