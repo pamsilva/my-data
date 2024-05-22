@@ -30,7 +30,7 @@ jobs:
             echo GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }} >> .env
           fi
 
-          # pull repo and build services
+          # pull and build services
           git pull &&
           docker-compose down &&
           docker-compose pull &&
