@@ -13,7 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Deploy via SSH
+    - name: Generate .env file
+      run: |
+        echo INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} >> .env
+        echo INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} >> .env
+        echo GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }} >> .env
+
+    - name: Backup existing .env file
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
@@ -25,13 +31,29 @@ jobs:
 
           # backup existing .env
           if [ -f .env ]; then
-            mv .env .env-$(date "+%Y%m%d-%H%M%S")
+            cp .env .env-$(date "+%Y%m%d-%H%M%S")
           fi
 
-          # update .env with latest secrets
-          echo INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} >> .env
-          echo INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} >> .env
-          echo GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }} >> .env
+    - name: Copy new .env to server
+      uses: appleboy/scp-action@master
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          HOST: ${{ secrets.HOST }}
+          KEY: ${{ secrets.SSH_DEPLOYMENT_KEY }}
+          port: ${{ secrets.PORT }}
+        with:
+          source: './.env'
+          target: '/opt/my-data/'
+
+    - name: Update repo, rebuild and start services
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /opt/my-data &&
 
           # pull and build services
           git pull &&
