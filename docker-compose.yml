@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   influxdb:
     image: influxdb:latest
     container_name: influxdb
