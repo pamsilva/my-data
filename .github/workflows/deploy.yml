@@ -15,9 +15,9 @@ jobs:
 
     - name: Generate .env file
       run: |
-        echo INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }} >> .env
-        echo INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }} >> .env
-        echo GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }} >> .env
+        echo "INFLUXDB_ADMIN_USER=${{ secrets.INFLUXDB_ADMIN_USER }}" >> .env
+        echo "INFLUXDB_ADMIN_PASSWORD=${{ secrets.INFLUXDB_ADMIN_PASSWORD }}" >> .env
+        echo "GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}" >> .env
 
     - name: Backup existing .env file
       uses: appleboy/ssh-action@v1.0.3
